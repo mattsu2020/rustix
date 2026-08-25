@@ -62,10 +62,8 @@ fn main() {
     // If experimental features are enabled, auto-detect and use available
     // features.
     if rustc_dep_of_std {
-        use_feature("rustc_attrs");
         use_feature("core_intrinsics");
     } else if rustix_use_experimental_features {
-        use_feature_or_nothing("rustc_attrs");
         use_feature_or_nothing("core_intrinsics");
     }
 
@@ -77,11 +75,6 @@ fn main() {
         use_feature_or_nothing("alloc_c_string");
         use_feature_or_nothing("alloc_ffi");
         use_feature_or_nothing("error_in_core");
-    }
-
-    // Feature needed for testing.
-    if use_static_assertions() {
-        use_feature("static_assertions");
     }
 
     // `LowerExp`/`UpperExp` for `NonZeroI32` etc.
@@ -195,11 +188,6 @@ fn main() {
     println!("cargo:rerun-if-env-changed=CARGO_FEATURE_USE_LIBC");
     println!("cargo:rerun-if-env-changed=CARGO_FEATURE_RUSTC_DEP_OF_STD");
     println!("cargo:rerun-if-env-changed=CARGO_CFG_MIRI");
-}
-
-fn use_static_assertions() -> bool {
-    // `offset_from` was made const in Rust 1.65.
-    can_compile("const unsafe fn foo(p: *const u8) -> isize { p.offset_from(p) }")
 }
 
 fn use_thumb_mode() -> bool {
